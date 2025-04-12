@@ -13,6 +13,8 @@ VIRTUAL_HEIGHT = 243
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
+  math.randomseed(os.time())
+
   smallFont = love.graphics.newFont('font.ttf', 8)
   scoreFont = love.graphics.newFont('font.ttf', 32)
   love.graphics.setFont(smallFont)
@@ -22,6 +24,12 @@ function love.load()
 
   player1X = 20
   player2X = VIRTUAL_WIDTH - 40
+
+  ballX = VIRTUAL_WIDTH / 2 - 2
+  ballY = VIRTUAL_HEIGHT / 2 - 2
+
+  ballDX = math.random(2) == 1 and 100 or -100
+  ballDY = math.random(-50, 50)
 
   push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
                   fullscreen = false,
@@ -47,7 +55,9 @@ function love.update(dt)
   elseif love.keyboard.isDown('left') then
     player2X = player2X + -PADDLE_SPEED * dt
   end
-
+  
+  ballX = ballX + ballDX * dt
+  ballY = ballY + ballDY * dt
 end
 
 function love.draw()
@@ -55,13 +65,11 @@ function love.draw()
 
   love.graphics.clear(40/255, 45/255, 52/255, 255/255)
 
-  love.graphics.setFont(smallFont)
-  love.graphics.printf("Hello world", 0, VIRTUAL_HEIGHT / 2 - 6, VIRTUAL_WIDTH, 'center')
-
   love.graphics.setFont(scoreFont)
   love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 2 - 15)
   love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 2 - 15)
 
+  love.graphics.rectangle('fill', ballX, ballY, 5, 5)
   love.graphics.rectangle('fill', player1X, 10, 20, 5)
   love.graphics.rectangle('fill', player2X, VIRTUAL_HEIGHT - 20, 20, 5)
 
